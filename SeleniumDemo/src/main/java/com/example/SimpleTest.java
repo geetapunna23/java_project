@@ -20,9 +20,7 @@ public class SimpleTest {
         driver.get("https://www.itv.com");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        WebElement element = wait.until(
-        ExpectedConditions.visibilityOfElementLocated(By.cssSelector("cassie-pre-banner--button--container"))
-);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cassie_accept_all_pre_banner"))).click();
 
         // Print title
         System.out.println("Page title is: " + driver.getTitle());
