@@ -10,10 +10,8 @@ import java.util.List;
 
 public class SimpleTest {
     public static void main(String[] args) {
-        // Set ChromeDriver path (if needed)
-        // System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-
-        // Create WebDriver instance
+ 
+       // Create WebDriver instance
         WebDriver driver = new ChromeDriver();
 
         // Open a website
@@ -30,24 +28,24 @@ public class SimpleTest {
         WebElement loginButton = driver.findElement(By.cssSelector("[data-test='login-button']"));
         loginButton.click();
 
-        // Print title
+        // Navigate to Products page
         WebElement titleElement = driver.findElement(By.cssSelector("[data-test='title']"));
         String titleText = titleElement.getText();
         titleText.equalsIgnoreCase("Products");
 
-        //find highest priced product
+        //Find highest priced product
 
         List<WebElement> priceElements = 
         driver.findElements(By.cssSelector("[data-test='inventory-item-price']"));
 
-        double maxPrice = Double.MIN_VALUE;  // smallest possible value
+        double maxPrice = Double.MIN_VALUE;  
         WebElement maxPriceElement = null;
 
         for (WebElement price : priceElements) {
                  
-            String text = price.getText();            // e.g., "$29.99"
-            text = text.replace("$", "");             // remove $ symbol
-            double value = Double.parseDouble(text);  // convert to double
+            String text = price.getText();           
+            text = text.replace("$", "");         
+            double value = Double.parseDouble(text);  
         
             if (value > maxPrice) {
                 maxPrice = value;
@@ -55,27 +53,19 @@ public class SimpleTest {
             }
         }
 
-        System.out.println("Highest Price: $" + maxPrice);
-        System.out.println("Element: " + maxPriceElement); // WebElement reference
-        System.out.println("Text: " + maxPriceElement.getText()); // visible text
 
-        
         // Add item to cart
 
-        // Find the parent container of the highest-priced item
         WebElement parent = maxPriceElement.findElement(By.xpath("./ancestor::div[contains(@class,'inventory_item')]"));
 
-        // Find and click the Add to Cart button inside that container
         WebElement addToCartButton = parent.findElement(By.cssSelector("button[data-test^='add-to-cart']"));
         addToCartButton.click();
 
-        // Wait until button text changes to "Remove"
         WebElement removeButton = parent.findElement(By.cssSelector("button[data-test^='remove']"));
 
 
         // Assert
         String buttonText = removeButton.getText();
-        System.out.println("-----------the text on the button is--------- " + buttonText);
 
         if (!buttonText.equals("Remove")) {
             throw new AssertionError("Expected button text to be 'Remove' but was: " + buttonText);
