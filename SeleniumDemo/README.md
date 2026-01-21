@@ -1,7 +1,7 @@
 JAVA_PROJECT
 # java_project
 
-simple navigation test
+Selenium automation program opena a web browser, navigate to products page and verifies taht the page has loaded successfully by checking the pape title and key elements. Demonstrates basic Selenium comcepts such and browser launch, navigation and validation.
 
 Prerequisites
 
