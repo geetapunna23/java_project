@@ -2,12 +2,12 @@
 
 ## Overview
 
-This project is a simple **Java + Selenium automation program** that:
+This project is a simple **JUnit + Selenium automation program** that:
 
 * Launches a web browser
 * Navigates to a Products page
 * Verifies the page has loaded successfully by checking the page title and key elements
-* Looks for highest prices item and adds to cart
+* Searches for highest priced item and adds to cart
 
 It demonstrates core Selenium concepts including **browser setup, navigation, and basic validation**.
 
