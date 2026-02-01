@@ -3,7 +3,7 @@ package com.example;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*; //Using JUnit 5 - this means we dont have to add the word Assertions in our test
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,31 +44,57 @@ public class ProductsPageTest {
 
         // Verify Products page
         WebElement titleElement = driver.findElement(By.cssSelector("[data-test='title']"));
-        Assertions.assertEquals(
-                "Products",
-                titleElement.getText(),
-                "User is not on Products page"
-        );
+
 
         // Find highest priced product
         List<WebElement> priceElements =
                 driver.findElements(By.cssSelector("[data-test='inventory-item-price']"));
 
-        double maxPrice = Double.MIN_VALUE;
-        WebElement maxPriceElement = null;
+        // double maxPrice = Double.MAX_VALUE;
+        // WebElement maxPriceElement = null;
 
-        for (WebElement price : priceElements) {
-            double value = Double.parseDouble(price.getText().replace("$", ""));
-            if (value > maxPrice) {
-                maxPrice = value;
-                maxPriceElement = price;
-            }
-        }
+        // for (WebElement price : priceElements) {
+        //     double value = Double.parseDouble(price.getText().replace("$", ""));
+        //     if (value < maxPrice) {
+        //         maxPrice = value;
+        //         maxPriceElement = price;
+        //     }
+        // }
 
-        Assertions.assertNotNull(maxPriceElement, "No price element found");
+        double highest = Double.MIN_VALUE;
+        double secondHighest = Double.MIN_VALUE;
 
-        // Add highest priced item to cart
-        WebElement parent = maxPriceElement.findElement(
+        WebElement highestElement = null;
+        WebElement secondHighestElement = null;
+
+                for (WebElement price : priceElements) {
+                double value = Double.parseDouble(price.getText().replace("$", ""));
+
+                if (value > highest) {
+                        // shift current highest to second highest
+                        secondHighest = highest;
+                        secondHighestElement = highestElement;
+
+                        highest = value;
+                        highestElement = price;
+
+                } else if (value < highest && value > secondHighest) {
+                        secondHighest = value;
+                        secondHighestElement = price;
+                }
+                }
+
+
+        // assertNotNull(maxPriceElement, "No price element found");
+        assertNotNull(secondHighestElement, "No price element found");
+
+        // // Add highest priced item to cart
+        // WebElement parent = maxPriceElement.findElement(
+        //         By.xpath("./ancestor::div[contains(@class,'inventory_item')]")
+        // );
+
+        // Add Second highest priced item to cart
+        WebElement parent = secondHighestElement.findElement(
                 By.xpath("./ancestor::div[contains(@class,'inventory_item')]")
         );
 
@@ -80,20 +106,17 @@ public class ProductsPageTest {
         WebElement removeButton =
                 parent.findElement(By.cssSelector("button[data-test^='remove']"));
 
-        Assertions.assertEquals(
-                "Remove",
-                removeButton.getText(),
-                "Button did not change to REMOVE"
-        );
-
         // Assert cart badge updated
         WebElement cartBadge =
                 driver.findElement(By.cssSelector("[data-test='shopping-cart-badge']"));
 
-        Assertions.assertEquals(
-                "1",
-                cartBadge.getText(),
-                "Cart badge count is incorrect"
-        );
-    }
+
+        // all asserts in one place rather then after each check or step
+                assertAll(
+                        () -> assertEquals("Products", titleElement.getText(),"User is not on Products page"),
+                        () -> assertEquals("Remove", removeButton.getText(), "Button did not change to REMOVE"),
+                        () -> assertEquals("1", cartBadge.getText(), "Cart badge count is incorrect")
+                );
+
+        }
 }
