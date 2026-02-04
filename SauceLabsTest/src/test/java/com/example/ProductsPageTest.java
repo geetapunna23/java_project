@@ -54,21 +54,34 @@ public class ProductsPageTest {
         List<WebElement> priceElements =
                 driver.findElements(By.cssSelector("[data-test='inventory-item-price']"));
 
-        double maxPrice = Double.MIN_VALUE;
-        WebElement maxPriceElement = null;
+        double highest = Double.MIN_VALUE;
+        double SecondHighest = Double.MIN_VALUE;
+
+        WebElement highestElement = null;
+        WebElement SecondHighestElement = null;
+
 
         for (WebElement price : priceElements) {
             double value = Double.parseDouble(price.getText().replace("$", ""));
-            if (value > maxPrice) {
-                maxPrice = value;
-                maxPriceElement = price;
+
+            if (value > highest) {
+                SecondHighest = highest;
+                SecondHighestElement = highestElement;
+
+                highest = value;
+                highestElement = price;
+                
+            } else if (value > highest && value > SecondHighest) {
+                SecondHighest = value;
+                highestElement = price;
+
             }
         }
 
-        Assertions.assertNotNull(maxPriceElement, "No price element found");
+        Assertions.assertNotNull(SecondHighestElement, "No price element found");
 
         // Add highest priced item to cart
-        WebElement parent = maxPriceElement.findElement(
+        WebElement parent = SecondHighestElement.findElement(
                 By.xpath("./ancestor::div[contains(@class,'inventory_item')]")
         );
 
